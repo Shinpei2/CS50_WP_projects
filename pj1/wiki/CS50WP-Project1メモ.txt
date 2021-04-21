@@ -1,0 +1,125 @@
+【Djangoの実装メモ】
+1.プロジェクトの作成
+    django-admin start project PJ名
+
+2．アプリの作成・アプリの登録
+　・python manage.py startapp アプリ名
+　・PJフォルダ直下の[setting.py > INSTALLED_APPS]内にアプリを追加
+　・PJフォルダ直下の「urls.py > urlpatterns」内にアプリへのURLを追加
+　　※最初のアプリの場合、17行目のimportモジュールに「include」を追加：from django.urls import include, path
+
+3．viewの作成・設定：　views.py　※都度
+
+4. アプリ内URL設定：　urls.py
+　・アプリfolder直下に「urls.py」を作成
+　　※viewsのImport忘れないfrom . import views
+　・作成したviewをurlpatternsに追加　※都度
+
+5. views.pyでテンプレートを返す：　templates > htmlファイル
+　・templatesフォルダの作成
+　・htmlファイルの作成
+
+■Tips
+・セッション使うとき　→「python manage.py runserver」を実行
+・templateの作り方、値の返し方とかは過去に作成したappのコードを参考
+　hello、lecture3、newyear、tasks
+
+＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+
+【BackGround】
+・課題：Wikiを作る。
+・各記事のページ：各記事の内容を閲覧可能
+・Wikipediaは、よりユーザフレンドリーなマークアップ言語（MarkDown）を使用している
+・Markdownのリンク
+https://help.github.com/en/github/writing-on-github/basic-writing-and-formatting-syntax
+
+【Getting Started】
+・Zipダウンロードして、解凍
+＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+【Understanding】
+・プロジェクト名：wiki
+・アプリ：encyclopedia
+
+・urls.py : vies.indexのfunctionに紐づけられたパス
+・util.py : wikiのentryの相互作用に役立つ3つの関数（中身は編集不要）
+　1. list_entries(): 直近保存された全てのentryをリストで返す
+　2. save_entry(title, content): タイトルとMarkdownのコンテンツを保存
+　3. get_entry(title):タイトルに応じた、Markdownコンテントを取り出す
+　　→もしそのentryが存在すれば、Markdownコンテントを返す
+　　→なければNoneを返す
+　★この3つの関数は、vies.pyで使用する
+
+・entriesフォルダ：entryがMarkdownファイルとして保存されていく
+　※いくつかサンプルあり。保存の都度、ファイルを作成（更新）
+
+・vies.py : 初期ではindexのみ。templateを返している（index.html）
+　→util.pyのlist_entries()関数を使って全entryのリストを返している
+
+・templates/encyclopedia : templateの置き場所。layout.htmlを継承している
+・layout.html : スライドバー有（
+　★検索窓：まだ何もできない
+　リンク：create a new、randamの2つはまだlink設定なし
+
+【Specification】
+■Entry Page（TITLE）： entry
+　・entryを表示（util.pyの関数を利用）→get_entryかな？
+  　※URI：「wiki/Entryのタイトル」
+　・存在しなければ、エラー表示
+　・存在すれば、
+　　entryのcontentをページ内に表示
+　　ページタイトルは、entryのタイトル
+
+■Index Pagee
+　・リンク押したら、各Entryページに飛べるように
+　　
+
+■Search
+・検索ボックスから検索した際に、下記の処理
+　完全一致：entry pageにリダイレクト
+　それ以外：部分一致の結果をすべて検索結果で表示
+　　→検索結果内のentryのタイトルを押すと、entry pageにリダイレクト
+
+■New page：
+・新しいentryを作成
+　1行文字列（タイトル用）
+　textareaを用意（コンテント：Markdownを記述する用）
+・保存時：同じタイトルの場合エラー表示、なければディスクに保存後→その記事をEntry Pageで開く
+
+■Edit Page
+・記事を編集出来るページ。
+　→ページに遷移した直前は、コンテントの内容が表示
+　→Saveボタンで内容を変更
+・各Entry Page内から「Edit」ボタンを押すことで、このページに遷移
+
+■Random：スライドバーに有り。ボタンを押すと、ランダムであるEntry Pageに飛ぶ
+
+■Markdown　→HTMLに変換
+　→「pip3 install markdown2」を使う
+
+＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+【TODO】
+◎遷移図
+■ temlpate一覧
+　1．template
+　　・index.html
+　　・wiki.html
+　　・create.html
+　　・search.html
+　　・edit.html
+　　・error.html
+■実装方針
+1．作成すべき全体の側を全て作成
+　・templateの作成
+　・リンク設定（views.pyにcontroller用意・template返す
+　・urls.pyに設定
+
+2．個別で機能を作成
+　1．基本機能
+　　◎index
+　　◎entry
+　　◎create
+　　◎error
+　　◎edit
+　　layout（リンク）
+　　◎search
+　　　random
